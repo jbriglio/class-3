@@ -1,0 +1,211 @@
+---
+title: "Basic R: Matrices"
+author: "Jane Briglio"
+date: "January 25, 2018"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Matrix problems
+
+### 1. Suppose
+$$ A = \begin{bmatrix}
+1 & 1 & 3\\ 
+5 & 2 & 6\\ 
+-2 & -1 & -3
+\end{bmatrix}$$
+(a) Check that $A^3 = \mathbf{0}$  
+(b) Replace the third column of A by the 
+sum of the second and third columns  
+   
+part a 
+```{r}
+A <- matrix(c(1,1,3,5,2,6,-2,-1,-3), nrow = 3, byrow = TRUE)
+A
+A*A*A
+```
+part b
+```{r}
+A[,3] <- A[,2] + A[,3]
+A
+```
+
+### 2. Create the following matrix B with 15 rows
+$$B = \begin{bmatrix}
+10 & -10 & 10\\
+10 &  -10& 10\\
+ \cdots & \cdots  & \cdots \\
+10 & -10 & 10
+\end{bmatrix} $$
+Calculate the 3x3 matrix $B^TB$.  You can make this calculation with the function crossprod().  See the documentaion. 
+
+```{r}
+x <- rep(10, times=15)
+y <- rep(-10, times=15)
+b <- c(x, y, x)
+bb <- matrix(b, 15, 3)
+bb
+crossprod(bb, bb) 
+```
+
+### 3. Create a 6 x 6 matrix matE  with every element equal to 0.  check what the functions row() and col() return when applied to matE.
+Now, create the 6 x 6 matix:
+$$\begin{bmatrix}
+0 &1  & 0 & 0 & 0 & 0\\
+1 &0 & 1 &0  & 0 &0 \\
+0 & 1 & 0 & 1 & 0 & 0\\
+0 & 0 & 1 & 0 & 1 & 0\\
+0& 0 & 0 & 1 & 0 & 1\\
+0& 0 & 0 & 0 & 1 & 0
+\end{bmatrix} $$  
+
+```{r}
+matE<- matrix(0, 6, 6)
+row(matE)
+col(matE)
+row(matE)-col(matE)
+matE[abs(row(matE)-col(matE))==1] <- 1
+matE
+
+```
+
+### 4.  Look at the help for the function outer().  Now, create the following patterned matrix:
+$$\begin{bmatrix}
+0 & 1 & 2 & 3 & 4\\
+1 & 2 & 3 & 4 & 5\\
+2 & 3 & 4 & 5 & 6\\
+3 & 4 & 5 & 6 & 7\\
+4 & 5 & 6 & 7 & 8
+\end{bmatrix} $$
+
+```{r}
+a <- 0:4
+A <- outer(a,a,"+")
+A
+```
+
+### 5.  Create the following patterned matrices.  Your solutions should be generalizable to enable creating larger matrices with the same structure.
+(a)
+$$\begin{bmatrix}
+0 & 1 & 2 & 3 & 4\\
+1 &2 & 3 & 4 & 0\\
+2 & 3 & 4 & 0 & 1\\
+3 & 4 & 0 & 1 & 2\\
+4 & 0 & 1 & 2 & 3
+\end{bmatrix}  $$
+```{r}
+x <- outer(0:4, 0:4, "+")
+matrix(x%%5, 5, 5)
+```
+(b)
+$$ \begin{bmatrix}
+0 & 1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9\\
+1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9 & 0\\
+\vdots  & \vdots & \vdots & \vdots & \vdots & \vdots & \vdots & \vdots & \vdots & \vdots\\
+8 & 9 & 0 & 1 & 2 & 3 & 4 & 5 & 6 & 7\\
+9 & 0 & 1 & 2 & 3 & 4 & 5 & 6 & 7 & 8
+\end{bmatrix} $$
+```{r}
+x <- outer(0:9, 0:9, "+")
+matrix(x%%10, 10, 10)
+```
+(c)
+$$\begin{bmatrix}
+0 & 8 & 7 & 6 & 5 & 4 &3  & 2 & 1\\
+1 & 0 & 8 & 7 & 6 & 5 & 4 & 3 & 2\\
+2 & 1 & 0 & 8 & 7 & 6 & 5 & 4 & 3\\
+3 & 2 & 1 & 0 & 8 & 7 & 6 & 5 & 4\\
+4 & 3 & 2 & 1 & 0 & 8 & 7 & 6 & 5\\
+5 & 4 & 3 & 2 & 1 & 0 & 8 & 7 & 6\\
+6 & 5 & 4 & 3 & 2 & 1 & 0 & 8 & 7\\
+7 & 6 & 5 & 4 & 3 & 2 & 1 & 0 & 8\\
+8 & 7 & 6 & 5 & 4 & 3 & 2 & 1 & 0
+\end{bmatrix} $$
+```{r}
+x <- outer(0:8, 0:8 ,"-")
+matrix(x%%9, 9, 9)
+```
+
+### 6.  Solve the following system of linear equations by setting up and solving the matrix equation Ax = y.
+$x_1 + 2x_2 + 3x_3 + 4x_4 + 5x_5 =  7$  
+$2x_1 +  x_2 + 2x_3 + 3x_4 + 4x_5 = -1$  
+$3x_1 + 2x_2 +  x_3 + 2x_4 + 3x_5 = -3$  
+$4x_1 + 3x_2 + 2x_3 +  x_4 + 2x_5 =  5$  
+$5x_1 + 4x_2 + 3x_3 + 2x_4 +  x_5 = 17$ 
+
+```{r}
+a <- 1:5
+b <- c(2, 1:4)
+d <- c(3, 2, 1:3)
+e <- c(4:1, 2)
+f <- 5:1
+A <- matrix(c(a, b, d, e, f), 5, 5)
+b <- matrix(c(7, -1, -3, 5, 17), 5, 1)
+solve(A,b)
+```
+
+### 7. Create a 6 x 10 matrix of random integers chosen from 1,2,...,10 by executing the following two lines of code:
+
+set.seed(75)  
+aMat <- matrix(sample(10, size=60, replace=TRUE), nr=6)  
+
+Use the matrix you have created to answer these questions:  
+(a) Find the number of entries in each row which are greater than 4.
+
+```{r}
+set.seed(75)  
+aMat <- matrix(sample(10, size=60, replace=TRUE), nr=6)
+length(which(aMat[1,]>4))
+length(which(aMat[2,]>4))
+length(which(aMat[3,]>4))
+length(which(aMat[4,]>4))
+length(which(aMat[5,]>4))
+length(which(aMat[6,]>4))
+```
+(b) Which rows contain exactly two occurrences of the number seven?
+```{r}
+a <- length(which(aMat[1,]==7))
+b <- length(which(aMat[2,]==7))
+c <- length(which(aMat[3,]==7))
+d <- length(which(aMat[4,]==7))
+e <- length(which(aMat[5,]==7))
+f <- length(which(aMat[6,]==7))
+x <- c(a, b, c, d, e, f)
+which(x==2)
+```
+(c) Find those pairs of columns whose total (over both columns) is greater tnan 75.  The answer should be a matrix with two columns; so, for example, the row (1,2) in the output matrix means that the sum of columns 1 and 2 in the original matrix is greater than 75.  Repeating a column is permitted; so, for exalmple, the final output matrix could contain the rows (1,2), (2,1), and (2,2).  
+```{r}
+x <- colSums(aMat)
+which(outer(x,x,"+")>75, arr.ind=T )
+```
+What if repetitions are not permitted? Then only (1,2) from (1,2),(2,1) and (2,2) would be permitted.
+```{r}
+x <- colSums(aMat)
+y <- outer(x,x,"+")>75
+y [lower.tri(y ,diag=T)] <- F
+which(y , arr.ind=T)
+```
+
+### 8. Calculate
+(a) $\sum\limits_{i=1}^{20} \sum\limits_{j=1}^5 \frac{i^4}{(3+j)}$
+```{r}
+i <- 1:20
+j <- 1:5
+sum(outer(i^4, (3+(j)), "/"))
+```
+(b) $\sum\limits_{i=1}^{20} \sum\limits_{j=1}^5 \frac{i^4}{(3+ij)}$
+```{r}
+i <- 1:20
+j <- 1:5
+sum((i^4)/ (3 + outer(i,j,"*")))
+```
+(c) $\sum\limits_{i=1}^{10} \sum\limits_{j=1}^i \frac{i^4}{(3+ij)}$
+```{r}
+i <- 1:20
+j <- 1:5
+sum(outer(1:10,1:10,function(i,j){ (i>=j)*i^4/(3+i*j) }) )
+```
+
